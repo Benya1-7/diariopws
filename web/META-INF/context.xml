@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/diariopws" antiJARLocking="true">
+  
+<Resource name="jdbc/diariopedagogico" 
+        global="jdbc/diariopedagogico"
+        factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+        auth="Container"
+        type="javax.sql.DataSource"              
+       username="manager"
+        password="seguridadninja"
+        driverClassName="com.mysql.jdbc.Driver"
+        description="Web Service con MySql"
+        url="jdbc:mysql://localhost:3306/diariopedagogico"
+        maxTotal="10"
+        maxIdle="10"
+        maxWaitMillis="10000"
+        removeAbandonedTimeout="300"			  
+        defaultAutoCommit="false" />
+
+</Context>
