@@ -27,8 +27,8 @@ import org.json.JSONObject;
  * @author TOSHIBA
  */
 public class AddPublicacion {
-      
-  static boolean addpublicacion(String idusuario, String titulo, String observaciones) 
+      //String sentimiento, String evaluacion, String analisis, String conclusion, String planaccion
+  static boolean addpublicacion(String idusuario, String titulo, String sentimiento, String evaluacion, String analisis, String conclusion, String planaccion, String observaciones) 
                 throws SQLException   {
            String respuesta="";
        
@@ -37,14 +37,19 @@ public class AddPublicacion {
             Timestamp currentfecha = new Timestamp(System.currentTimeMillis());
          String fecha = currentfecha.toString();
           OperacionBD.iniciaroperacion();
-          String sql="INSERT INTO publicacion(idusuario, fecha, titulo, observaciones, padre)"
+          String sql="INSERT INTO publicacion(idusuario, fecha, titulo, sentimiento, evaluacion, analisis, conclusion, planaccion, observaciones, padre)"
                         + "VALUES (?,?,?,?,?);";
           List<Parametro> parametros= new  ArrayList<>();
           parametros.add(new Parametro(1,idusuario,Tipo.INTEGER));
           parametros.add(new Parametro(2,fecha,Tipo.TIMESTAMP));
           parametros.add(new Parametro(3,titulo,Tipo.VARCHAR));
-          parametros.add(new Parametro(4,observaciones,Tipo.VARCHAR));
-          parametros.add(new Parametro(5,padre,Tipo.INTEGER));
+          parametros.add(new Parametro(4,sentimiento,Tipo.VARCHAR));
+          parametros.add(new Parametro(5,evaluacion,Tipo.VARCHAR));
+          parametros.add(new Parametro(6,analisis,Tipo.VARCHAR));
+          parametros.add(new Parametro(7,conclusion,Tipo.VARCHAR));
+          parametros.add(new Parametro(8,planaccion,Tipo.VARCHAR));
+          parametros.add(new Parametro(9,observaciones,Tipo.VARCHAR));
+          parametros.add(new Parametro(10,padre,Tipo.INTEGER));
           String json = OperacionBD.accion(sql,parametros);
             parametros.clear();
             OperacionBD.confirmaroperacion();

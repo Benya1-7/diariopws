@@ -40,6 +40,7 @@ import static org.eclipse.persistence.sdo.helper.extension.Token.POST;
 import org.json.JSONObject;
 import comun.Validaciones.Validargrupo;
 import comun.Objets.ObjGrupo;
+import org.json.JSONArray;
 
 /**
  *
@@ -103,6 +104,40 @@ public class Grupo {
       return json;
     }//--- fin listar Grupos por Idusuario
     
+    //listar grupo por publicacion padre//
+    @Path("/listgpoXppadre")
+    @GET
+    @Produces("application/json;charset=UTF-8")
+    public String listgpoXppadre(@HeaderParam("idpublicacion")String idpublicacion)throws SQLException, Exception {
+      String nombregrupo="";
+      String idgrupo="";
+      String idp="";
+      
+      JSONObject JSONlistgpoXppadre = new JSONObject();
+      JSONArray jsonarraydatos =new JSONArray();
+        
+      OperacionBD.iniciaroperacion();
+      String sql="select gp.idgrupo, p.idpublicacion, g.nombregrupo from grupopublicacion gp, publicacion p, grupo g where gp.idpublicacion=p.idpublicacion and p.padre=0 and gp.idgrupo=g.idgrupo and p.idpublicacion=? and p.idpublicacion=gp.idpublicacion;";
+      List<Parametro> parametros= new  ArrayList<>();
+       parametros.add(new Parametro(1,idpublicacion,Tipo.INTEGER));
+       String json = OperacionBD.consulta(sql, parametros,Formato.JSON);
+      parametros.clear();
+      OperacionBD.confirmaroperacion();
+      JSONArray jsonarray = new JSONArray(json);
+             for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject jsonobject = jsonarray.getJSONObject(i);
+              nombregrupo=(String) jsonobject.get("nombregrupo");
+              idgrupo=(String) jsonobject.get("idgrupo");
+              idp=(String) jsonobject.get("idpublicacion");
+              JSONlistgpoXppadre.put("datosgpo",jsonobject);
+                
+             }  
+             String datos=(String)JSONlistgpoXppadre.getString("datosgpo");
+             jsonarraydatos.put(datos);
+           
+      return datos.toString();
+    }//--- fin listar grupo por id
+    ////
         
      @Path("/listgpoxid")
     @GET
