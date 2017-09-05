@@ -10,7 +10,7 @@ package comun.Objets;
  * @author TOSHIBA
  */
 public class ObjGpoDetalle {
-        private Long idgrupodetalle, idgrupo, idusuario, idrol;
+    private Long idgrupodetalle, idgrupo, idusuario, idrol;
 
     public ObjGpoDetalle(Long idgrupodetalle, Long idgrupo, Long idusuario, Long idrol) {
         this.idgrupodetalle = idgrupodetalle;

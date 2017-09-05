@@ -38,7 +38,7 @@ public class AddPublicacion {
          String fecha = currentfecha.toString();
           OperacionBD.iniciaroperacion();
           String sql="INSERT INTO publicacion(idusuario, fecha, titulo, sentimiento, evaluacion, analisis, conclusion, planaccion, observaciones, padre)"
-                        + "VALUES (?,?,?,?,?);";
+                        + "VALUES (?,?,?,?,?,?,?,?,?,?);";
           List<Parametro> parametros= new  ArrayList<>();
           parametros.add(new Parametro(1,idusuario,Tipo.INTEGER));
           parametros.add(new Parametro(2,fecha,Tipo.TIMESTAMP));
@@ -61,7 +61,40 @@ public class AddPublicacion {
           Logger.getLogger(AddPublicacion.class.getName()).log(Level.SEVERE, null, ex);
       }
       return true;
+  } //Fin add publicacion
+  
+    static boolean updatepublicacion(String idpublicacion, String titulo, String sentimiento, String evaluacion, String analisis, String conclusion, String planaccion, String observaciones) 
+                throws SQLException   {
+           String respuesta="";
+       
+      try {
+          OperacionBD.iniciaroperacion();
+          String sql="UPDATE publicacion SET titulo=?, sentimiento=?, evaluacion=?, analisis=?, "
+                        + "conclusion=?, planaccion=?, observaciones=? WHERE publicacion.idpublicacion=?;";
+          List<Parametro> parametros= new  ArrayList<>();
+          parametros.add(new Parametro(1,observaciones,Tipo.VARCHAR));
+          parametros.add(new Parametro(2,titulo,Tipo.VARCHAR));
+          parametros.add(new Parametro(3,sentimiento,Tipo.VARCHAR));
+          parametros.add(new Parametro(4,evaluacion,Tipo.VARCHAR));
+          parametros.add(new Parametro(5,analisis,Tipo.VARCHAR));
+          parametros.add(new Parametro(6,conclusion,Tipo.VARCHAR));
+          parametros.add(new Parametro(7,planaccion,Tipo.VARCHAR));
+          parametros.add(new Parametro(8,idpublicacion ,Tipo.INTEGER));
+          String json = OperacionBD.accion(sql,parametros);
+            parametros.clear();
+            OperacionBD.confirmaroperacion();
+           respuesta=json.toString();
+          
+      } catch (ParseException ex) {
+          Logger.getLogger(AddPublicacion.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (JSONException ex) {
+          Logger.getLogger(AddPublicacion.class.getName()).log(Level.SEVERE, null, ex);
+          
+      }
+      return true;
   }
+  
+  //Fin update publicacion
   
   static boolean insertDpublicacion(String idpublicacion, String ruta, String tipo, String formato, String descripcion) 
                 throws SQLException   {

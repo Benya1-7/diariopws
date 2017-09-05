@@ -105,7 +105,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
               
       OperacionBD.iniciaroperacion();
        
-       String sql="SELECT publicacion.idpublicacion, publicacion.idusuario, publicacion.fecha, "
+      /* String sql="SELECT publicacion.idpublicacion, publicacion.idusuario, publicacion.fecha, "
                  + "publicacion.titulo, publicacion.observaciones, publicacion.padre, "
                  + "grupodetalle.idusuario, grupodetalle.idrol, grupo.idgrupo, grupo.nombregrupo, "
                  + "detallepublicacion.iddetallepublicacion, detallepublicacion.idpublicacion, "
@@ -114,7 +114,8 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
                  + "grupo, detallepublicacion, usuario WHERE publicacion.idusuario=usuario.idusuario AND "
                  + "grupodetalle.idusuario=publicacion.idusuario AND grupo.idgrupo=grupodetalle.idgrupo AND "
                  + "detallepublicacion.idpublicacion=publicacion.idpublicacion "
-                 + "AND usuario.idusuario= ? ORDER BY publicacion.idpublicacion DESC;";
+                 + "AND usuario.idusuario= ? ORDER BY publicacion.idpublicacion DESC;";*/
+      String sql= "SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario and u.idusuario=? ORDER BY p.idpublicacion DESC;";
       List<Parametro> parametros= new  ArrayList<>();
       parametros.add(new Parametro(1, idusuario, Tipo.INTEGER));
        
@@ -219,9 +220,40 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
      } 
      catch (Exception ex) {
          Logger.getLogger(Publicacion.class.getName()).log(Level.SEVERE, null, ex);
+         
      }
       return Response.status(200).entity(jsoninsetpublicacion.toString()).build();
      }//Fin createpublicacionpadre
+     
+     ////Update publicacion padre
+         @Path("/updatepublicacionpadre")
+    @PUT
+    @Produces("application/json;charset=UTF-8")
+    
+     public Response updatepublicacionpadre(@FormParam("idpublicacion")String idpublicacion
+                          ,@FormParam("titulo")String titulo
+                           ,@FormParam("sentimiento")String sentimiento
+                            ,@FormParam("evaluacion")String evaluacion
+                             ,@FormParam("analisis")String analisis
+                              ,@FormParam("conclusion")String conclusion
+                               ,@FormParam("planaccion")String planaccion
+                          ,@FormParam("observaciones")String observaciones
+                          
+                            )
+           {
+         JSONObject jsoninsetpublicacion = new JSONObject();     
+     try {
+          AddPublicacion.updatepublicacion(idpublicacion, titulo, sentimiento, evaluacion, analisis, conclusion, planaccion, observaciones);
+          jsoninsetpublicacion.put("ok", "Publicacion Actualizada");      
+             
+            
+     } 
+     catch (Exception ex) {
+         Logger.getLogger(Publicacion.class.getName()).log(Level.SEVERE, null, ex);        
+     }
+      return Response.status(200).entity(jsoninsetpublicacion.toString()).build();
+     }//Fin update publicacion padre
+     
     //////////////////////////////publicar archivo ///////////////////////
      @POST
     @Path("/publicarArchivo") 
@@ -483,7 +515,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
           
        OperacionBD.iniciaroperacion();
       
-      String sql="UPDATE publicacion SET analisis=? WHERE publicacion.idpublicacion=?;";   
+      String sql="UPDATE publicacion SET conclusion=? WHERE publicacion.idpublicacion=?;";   
          
      List<Parametro> parametros= new  ArrayList<>();
      parametros.add(new Parametro(1,conclusion,Tipo.VARCHAR));
@@ -499,6 +531,37 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
         return jsonupdate.toString();
      } //Fin de Metodo update updateconclusion
      
+           @Path("/updateplanaccion") 
+     @PUT 
+     @Produces(MediaType.APPLICATION_JSON)  
+     public String updateplanaccion(@FormParam("idpublicacion")String idpublicacion
+                                      ,@FormParam("planaccion")String planaccion
+                                     
+                                                                           
+                                      )
+          throws SQLException, Exception {
+          String respuesta="";
+        JSONObject jsonupdate = new JSONObject();
+        try {
+              
+          
+       OperacionBD.iniciaroperacion();
+      
+      String sql="UPDATE publicacion SET planaccion=? WHERE publicacion.idpublicacion=?;";   
+         
+     List<Parametro> parametros= new  ArrayList<>();
+     parametros.add(new Parametro(1,planaccion,Tipo.VARCHAR));
+     parametros.add(new Parametro(2,idpublicacion,Tipo.VARCHAR));
+     String json = OperacionBD.accion(sql, parametros);
+   
+        parametros.clear();
+      OperacionBD.confirmaroperacion();
+      jsonupdate.put("Success","plan de accion actualizado con exito!!"+json);
+      } catch (Exception e) {
+         
+       }
+        return jsonupdate.toString();
+     }
      /////update inf complementaria//////////////////////////////////////////
      
      
