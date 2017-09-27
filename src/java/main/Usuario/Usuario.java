@@ -67,7 +67,7 @@ public class Usuario {
         
       OperacionBD.iniciaroperacion();
    
-      String sql="SELECT usuario.idusuario, nombre, apellidos, genero, cuenta, vigencia, institucion, grupo, estado, foto, fportada FROM usuario ORDER BY usuario.idusuario ASC;";
+      String sql="SELECT usuario.idusuario, nombre, apellidos, genero, cuenta, vigencia, institucion, grupo, estado, foto, fportada, token FROM usuario ORDER BY usuario.idusuario ASC;";
          
       List<Parametro> parametros2= new  ArrayList<>();
        
@@ -93,7 +93,7 @@ public class Usuario {
                    + "usuario.foto, usuario.cuenta FROM usuario WHERE usuario.nombre like '%"+nombre+"%';";
        */ 
  String sql="SELECT usuario.idusuario, usuario.nombre, usuario.apellidos, "
-                   + "usuario.foto, usuario.fportada, usuario.cuenta, usuariorol.idrol, usuariorol.idusuario "
+                   + "usuario.foto, usuario.fportada, usuario.cuenta, usuario.token, usuariorol.idrol, usuariorol.idusuario "
                + "FROM usuario, usuariorol WHERE usuario.nombre like '"+nombre+"%'"
                + "AND usuariorol.idusuario=usuario.idusuario;";
         
@@ -133,7 +133,7 @@ public class Usuario {
       String sql="SELECT usuario.idusuario, usuario.nombre, usuario.apellidos, "
                     + "usuario.fnacimiento, usuario.genero, usuario.cuenta, "
                     + "usuario.vigencia, usuario.correo, usuario.telefono, "
-                    + "usuario.institucion, usuario.grupo, usuario.estado, usuario.foto, usuario.fportada "
+                    + "usuario.institucion, usuario.grupo, usuario.estado, usuario.foto, usuario.fportada, usuario.token "
                     + "FROM usuario" +
                 " WHERE usuario.idusuario=?;";
          
@@ -177,7 +177,9 @@ public class Usuario {
                                   @FormParam("institucion")String institucion,
                                   @FormParam("grupo")String grupo,
                                   @FormParam("estado") String estado,
-                                 @FormParam("foto")String foto ) 
+                                 @FormParam("foto")String foto,
+                                 @FormParam("token")String token
+                                 ) 
              throws NoSuchAlgorithmException, SQLException, ParseException, JSONException
           {
               
@@ -191,7 +193,7 @@ public class Usuario {
      
       if(usr.getCuenta()==null || usr.getCorreo()==null || usr.getPassword()==null){
           AddUsuario.insertusuario(nombre, apellidos, genero, cuenta, password, vigencia, 
-                        correo, telefono, institucion, grupo, estado, foto);
+                        correo, telefono, institucion, grupo, estado, foto, token);
           AddUsuario.addusuariorol();
             jsonRegistrar.put("Success","Hemos realizado tú registro con exito!!");
           
@@ -416,12 +418,12 @@ public class Usuario {
 		try {
 	        crearCarpeta(SaveDownloadFile.RUTA);
                         
-                                    try {
+                                   /* try {
                                        EliminarFile.delete_imageperfil(idusuario);
                                         
                                     } catch (Exception e) {
                                         
-                                    }
+                                    }*/
                                 
 		} catch (SecurityException se) {
 			return Response.status(500)

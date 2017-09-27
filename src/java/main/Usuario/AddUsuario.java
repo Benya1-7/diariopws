@@ -30,7 +30,7 @@ public class AddUsuario {
     
         static boolean insertusuario(String nombre, String apellidos, String genero, 
                       String cuenta, String password, String vigencia, String correo, 
-                      String telefono, String institucion, String grupo, String estado, String foto) 
+                      String telefono, String institucion, String grupo, String estado, String foto, String token) 
                throws NoSuchAlgorithmException, SQLException, ParseException, JSONException{
            String respuesta="";
        
@@ -38,8 +38,8 @@ public class AddUsuario {
          OperacionBD.iniciaroperacion();
            
       String sql="INSERT INTO usuario(nombre, apellidos, genero, cuenta, password, vigencia, correo, telefono"
-                  + ", institucion, grupo, estado, foto)"  
-                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";   
+                  + ", institucion, grupo, estado, foto, token)"  
+                  + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";   
       password=Cifrado.sha2(password);
      
       List<Parametro> parametros= new  ArrayList<>();
@@ -55,6 +55,7 @@ public class AddUsuario {
      parametros.add(new Parametro(10,grupo,Tipo.VARCHAR));
      parametros.add(new Parametro(11,estado,Tipo.VARCHAR));
      parametros.add(new Parametro(12,foto,Tipo.VARCHAR));
+     parametros.add(new Parametro(13,token,Tipo.VARCHAR));
      String json = OperacionBD.accion(sql,parametros);
      parametros.clear();
       

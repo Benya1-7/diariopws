@@ -72,13 +72,13 @@ public class AddPublicacion {
           String sql="UPDATE publicacion SET titulo=?, sentimiento=?, evaluacion=?, analisis=?, "
                         + "conclusion=?, planaccion=?, observaciones=? WHERE publicacion.idpublicacion=?;";
           List<Parametro> parametros= new  ArrayList<>();
-          parametros.add(new Parametro(1,observaciones,Tipo.VARCHAR));
-          parametros.add(new Parametro(2,titulo,Tipo.VARCHAR));
-          parametros.add(new Parametro(3,sentimiento,Tipo.VARCHAR));
-          parametros.add(new Parametro(4,evaluacion,Tipo.VARCHAR));
-          parametros.add(new Parametro(5,analisis,Tipo.VARCHAR));
-          parametros.add(new Parametro(6,conclusion,Tipo.VARCHAR));
-          parametros.add(new Parametro(7,planaccion,Tipo.VARCHAR));
+          parametros.add(new Parametro(1,titulo,Tipo.VARCHAR));
+          parametros.add(new Parametro(2,sentimiento,Tipo.VARCHAR));
+          parametros.add(new Parametro(3,evaluacion,Tipo.VARCHAR));
+          parametros.add(new Parametro(4,analisis,Tipo.VARCHAR));
+          parametros.add(new Parametro(5,conclusion,Tipo.VARCHAR));
+          parametros.add(new Parametro(6,planaccion,Tipo.VARCHAR));
+          parametros.add(new Parametro(7,observaciones,Tipo.VARCHAR));
           parametros.add(new Parametro(8,idpublicacion ,Tipo.INTEGER));
           String json = OperacionBD.accion(sql,parametros);
             parametros.clear();

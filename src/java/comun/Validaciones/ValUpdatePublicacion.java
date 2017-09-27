@@ -23,7 +23,7 @@ import java.sql.Statement;
 public class ValUpdatePublicacion {
              private static Conexion poolDeConexion = null; 
      
-    public static ObjPublicacion validar_Usuario(String idpublicacion, String idusuario)
+    public static ObjPublicacion verificarpublicacion(String idpublicacion, String idusuario)
             throws NoSuchAlgorithmException, 
             SQLException{        
         Connection conn = null;
@@ -32,9 +32,9 @@ public class ValUpdatePublicacion {
         try{
             poolDeConexion=Conexion.getInstance();
             conn = poolDeConexion.conectar();
-            String sql = " SELECT publicacion, idpublicacion, idusuario"
-                    + " FROM publicacion "
-                    + " WHERE idpublicacion=? && idusuario=?;";
+            String sql = " SELECT p.idpublicacion, p.idusuario"
+                    + " FROM publicacion p"
+                    + " WHERE p.idpublicacion=? && p.idusuario=?;";
             
            
             stmt = conn.prepareStatement(sql);
@@ -82,7 +82,7 @@ public class ValUpdatePublicacion {
           conn=poolDeConexion.conectar();
             
            Statement stmt = conn.createStatement();
-            rs = stmt.executeQuery("SHOW TABLE STATUS WHERE Name = 'usuario'");
+            rs = stmt.executeQuery("SHOW TABLE STATUS WHERE Name = 'publicacion'");
             rs.next();
             nextId = Long.parseLong(rs.getString("Auto_increment"));
           

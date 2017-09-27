@@ -19,11 +19,11 @@ public class SaveDownloadFile {
  // public static final String RUTA =  "/Users/TOSHIBA/Documents/archivos/";   //Ruta de almacenamiento local benja
   // public static final String RUTA =  "/Users/Any/Documents/archivos/prueba/";  //Ruta de almacenamiento local any
     
- //public static final String RUTA =  "/home/diario/app/documents/";     //Ruta de almacenamiento en el servidor
+ public static final String RUTA =  "/home/diario/app/documents/";     //Ruta de almacenamiento en el servidor
  // public static final String RUTA = "/Users/Eduardo/Documents/Developer/Server/tomcat/archivosapp/";  // Ruta de almacenamiento local lalo
   //  public static final String RUTA = "/Users/Eduardo/Documents/Developer/Server/archivosapp/";  // Ruta de almacenamiento local lalo
   // public static final String RUTA = "/Users/un_an/OneDrive/Documentos/Developers/tomcat/archivosapp/";
-   public static final String RUTA = "/archivosapp/";
+  // public static final String RUTA = "/archivosapp/";
   /**
      *
      * @param inputStream

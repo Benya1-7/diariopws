@@ -29,10 +29,14 @@ import comun.BD.GetIDs;
 import comun.Multimedia.SaveDownloadFile;
 import static comun.Multimedia.SaveDownloadFile.crearCarpeta;
 import static comun.Multimedia.SaveDownloadFile.guardar;
+import comun.Objets.ObjPublicacion;
+import comun.Validaciones.ValUpdatePublicacion;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import org.json.JSONArray;
 import java.sql.CallableStatement; 
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
@@ -40,6 +44,7 @@ import javax.ws.rs.PUT;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import main.Publicacion.Archivo.*;
+import org.json.JSONException;
 
 /**
  *
@@ -56,7 +61,7 @@ public class Publicacion {
  public String list()throws SQLException, Exception {
        
       OperacionBD.iniciaroperacion();
-String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario  ORDER BY p.idpublicacion DESC;";   
+String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto, u.token from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario  ORDER BY p.idpublicacion DESC;";   
  List<Parametro> parametros= new  ArrayList<>();
        
       String json = OperacionBD.consulta(sql, parametros, Formato.JSON);
@@ -80,7 +85,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
       OperacionBD.iniciaroperacion();
   
  //  String sql="SELECT p.idpublicacion, p.idusuario, p.titulo, p.padre, ph.idpublicacion,  ph.idusuario, ph.titulo, ph.observaciones, ph.padre, u.idusuario, u.nombre, u.foto FROM publicacion p, publicacion ph, usuario u where p.idpublicacion=ph.padre and p.idpublicacion=? and u.idusuario=ph.idusuario;";
- String sql="SELECT p.idpublicacion, p.idusuario, p.titulo,  p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.padre, ph.idpublicacion, ph.idusuario, ph.titulo, ph.observaciones, ph.padre, u.idusuario, u.nombre, u.foto FROM publicacion p, publicacion ph, usuario u where p.idpublicacion=ph.padre and p.idpublicacion=? and u.idusuario=ph.idusuario;";   
+ String sql="SELECT p.idpublicacion, p.idusuario, p.titulo,  p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.padre, ph.idpublicacion, ph.idusuario, ph.titulo, ph.observaciones, ph.padre, u.idusuario, u.nombre, u.foto, u.token FROM publicacion p, publicacion ph, usuario u where p.idpublicacion=ph.padre and p.idpublicacion=? and u.idusuario=ph.idusuario;";   
           
       List<Parametro> parametros= new  ArrayList<>();
        parametros.add(new Parametro(1, idpublicacion, Tipo.INTEGER));
@@ -97,7 +102,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
      ////Listar publicaciones por id de usuario
  @Path("/listxiduser")
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json;charset=UTF-8")
  
    
  public String listxiduser(@HeaderParam("idusuario") String idusuario)
@@ -115,7 +120,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
                  + "grupodetalle.idusuario=publicacion.idusuario AND grupo.idgrupo=grupodetalle.idgrupo AND "
                  + "detallepublicacion.idpublicacion=publicacion.idpublicacion "
                  + "AND usuario.idusuario= ? ORDER BY publicacion.idpublicacion DESC;";*/
-      String sql= "SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario and u.idusuario=? ORDER BY p.idpublicacion DESC;";
+      String sql= "SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto, u.token from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario and u.idusuario=? ORDER BY p.idpublicacion DESC;";
       List<Parametro> parametros= new  ArrayList<>();
       parametros.add(new Parametro(1, idusuario, Tipo.INTEGER));
        
@@ -140,7 +145,7 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
        
 
       String sql="SELECT grupo.idgrupo, grupo.nombregrupo, grupodetalle.idusuario , "
-                    + "usuario.nombre, usuario.foto, publicacion.fecha , "
+                    + "usuario.nombre, usuario.foto, usuario.token, publicacion.fecha , "
                     + "publicacion.titulo, publicacion.observaciones, publicacion.padre , "
                     + "detallepublicacion.ruta, detallepublicacion.tipo, detallepublicacion.formato, "
                     + "detallepublicacion.descripcion "
@@ -226,11 +231,12 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
      }//Fin createpublicacionpadre
      
      ////Update publicacion padre
-         @Path("/updatepublicacionpadre")
+    @Path("/updatepublicacionpadre")
     @PUT
     @Produces("application/json;charset=UTF-8")
     
-     public Response updatepublicacionpadre(@FormParam("idpublicacion")String idpublicacion
+     public Response updatepublicacionpadre(
+                         @FormParam("idpublicacion")String idpublicacion
                           ,@FormParam("titulo")String titulo
                            ,@FormParam("sentimiento")String sentimiento
                             ,@FormParam("evaluacion")String evaluacion
@@ -253,6 +259,37 @@ String sql=" SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.eval
      }
       return Response.status(200).entity(jsoninsetpublicacion.toString()).build();
      }//Fin update publicacion padre
+     
+     
+     @Path("/updatepublicacionpadre1")
+    @PUT
+    @Produces("application/json;charset=UTF-8")
+     public Response updatepublicacionpadre1(@FormParam("idpublicacion")String idpublicacion
+                         ,@FormParam("idusuario")String idusuario       
+                          ,@FormParam("titulo")String titulo
+                           ,@FormParam("sentimiento")String sentimiento
+                            ,@FormParam("evaluacion")String evaluacion
+                             ,@FormParam("analisis")String analisis
+                              ,@FormParam("conclusion")String conclusion
+                               ,@FormParam("planaccion")String planaccion
+                          ,@FormParam("observaciones")String observaciones
+                          
+                            )  throws NoSuchAlgorithmException, SQLException, ParseException, JSONException
+           {
+               String respuesta="";
+                ObjPublicacion publicacion=new ObjPublicacion();
+             publicacion=ValUpdatePublicacion.verificarpublicacion(idpublicacion,idusuario);    
+             if(publicacion.getIdpublicacion()!=null && publicacion.getIdusuario()!=null){
+            AddPublicacion.updatepublicacion(idpublicacion, titulo, sentimiento, evaluacion, analisis, conclusion, planaccion, observaciones);
+                  respuesta="true";
+            
+      }
+             else{
+              //   Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            respuesta="Usted no puede modificar la publicacin";
+             }
+           return  Response.ok(respuesta).build();
+           }
      
     //////////////////////////////publicar archivo ///////////////////////
      @POST
