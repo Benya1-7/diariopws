@@ -55,7 +55,7 @@ public class Login {
                         .entity(msg).build();
             }
             OperacionBD.iniciaroperacion();
-      String sql = " SELECT idusuario, cuenta, correo, telefono, foto, fportada "
+      String sql = " SELECT idusuario, cuenta, correo, telefono, foto, fportada, token "
                     + " FROM usuario "
                     + " WHERE correo=? AND password=?;";
       password=Cifrado.sha2(password);
