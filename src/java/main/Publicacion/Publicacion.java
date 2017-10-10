@@ -122,14 +122,16 @@ List<Parametro> parametros= new  ArrayList<>();
                  + "grupodetalle.idusuario=publicacion.idusuario AND grupo.idgrupo=grupodetalle.idgrupo AND "
                  + "detallepublicacion.idpublicacion=publicacion.idpublicacion "
                  + "AND usuario.idusuario= ? ORDER BY publicacion.idpublicacion DESC;";*/
-     // String sql= "SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto, u.token from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario and u.idusuario=? ORDER BY p.idpublicacion DESC;";
+      String sql= "SELECT p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre, u.idusuario, u.nombre,u.cuenta, u.foto, u.token from publicacion p, usuario u WHERE p.padre=0 and p.idusuario=u.idusuario and u.idusuario=? ORDER BY p.idpublicacion DESC;";
      /* String sql= "SELECT gd.idusuario, u.nombre, u.idusuario AS OMITIR, gd.idgrupo, g.idgrupo, g.nombregrupo, "
                     + "gp.idpublicacion AS IDPUBGP,p.idpublicacion, p.titulo, p.idusuario FROM grupodetalle gd, "
                     + "grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo "
                     + "AND u.idusuario=gd.idusuario  AND gd.idusuario=u.idusuario  AND gp.idgrupo=gd.idgrupo "
                     + "AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";*/
-     String sql= "SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";
-      List<Parametro> parametros= new  ArrayList<>();
+/*Correcta an en elservidir */ //String sql= "SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";
+//  String sql="SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario AS PARABUSCARUSER, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";      
+
+  List<Parametro> parametros= new  ArrayList<>();
       parametros.add(new Parametro(1, idusuario, Tipo.INTEGER));
        
       String json = OperacionBD.consulta(sql, parametros, Formato.JSON);
@@ -139,6 +141,32 @@ List<Parametro> parametros= new  ArrayList<>();
       
           return json;
     }//--- fin listxiduser
+ 
+      ////Listar publicaciones de los grupos donde participa el usuario
+ @Path("/listpublicxgpo")
+    @GET
+    @Produces("application/json;charset=UTF-8")
+ 
+   
+ public String listpublicxgpo(@HeaderParam("idusuario") String idusuario)
+         throws SQLException, Exception {
+              
+      OperacionBD.iniciaroperacion();       
+      String sql="SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario AS PARABUSCARUSER, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";      
+
+  List<Parametro> parametros= new  ArrayList<>();
+      parametros.add(new Parametro(1, idusuario, Tipo.INTEGER));
+       
+      String json = OperacionBD.consulta(sql, parametros, Formato.JSON);
+      parametros.removeAll(parametros);
+     
+      OperacionBD.confirmaroperacion();
+      
+          return json;
+    }//--- fin Listar publicaciones de los grupos donde participa en usuario
+ 
+ 
+ 
  
  ////Listar publicacion por grupo 
   @Path("/listxidgrupo")
