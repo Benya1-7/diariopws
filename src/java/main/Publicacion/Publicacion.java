@@ -152,8 +152,8 @@ List<Parametro> parametros= new  ArrayList<>();
          throws SQLException, Exception {
               
       OperacionBD.iniciaroperacion();       
-      String sql="SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario AS PARABUSCARUSER, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";      
-
+     // String sql="SELECT u.idusuario, u.nombre,u.cuenta, u.foto, u.token, g.idgrupo, g.nombregrupo, p.idpublicacion, p.idusuario AS PARABUSCARUSER, p.fecha, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.titulo, p.observaciones, p.padre FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC;";      
+      String sql="SELECT DISTINCT p.idpublicacion , p.idusuario AS PARABUSCARUSER, p.fecha, p.titulo, p.observaciones, p.sentimiento, p.evaluacion, p.analisis, p.conclusion, p.planaccion, p.padre, g.idgrupo, g.nombregrupo, (SELECT nombre  FROM usuario WHERE idusuario=p.idusuario) AS nombre, (SELECT foto  FROM usuario WHERE idusuario=p.idusuario) AS foto, (SELECT token  FROM usuario WHERE idusuario=p.idusuario) AS token FROM grupodetalle gd, grupo g, usuario u, grupopublicacion gp, publicacion p WHERE g.idgrupo=gd.idgrupo AND u.idusuario=gd.idusuario AND gd.idusuario=u.idusuario AND gp.idgrupo=gd.idgrupo AND p.idpublicacion=gp.idpublicacion AND p.padre=0 AND u.idusuario=? ORDER BY p.idpublicacion DESC; ";
   List<Parametro> parametros= new  ArrayList<>();
       parametros.add(new Parametro(1, idusuario, Tipo.INTEGER));
        

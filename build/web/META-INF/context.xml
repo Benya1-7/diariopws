@@ -15,6 +15,7 @@
         maxIdle="10"
         maxWaitMillis="10000"
         removeAbandonedTimeout="300"			  
-        defaultAutoCommit="false" />
+        defaultAutoCommit="false" 
+        autoReconnect="true"/>
 
 </Context>
