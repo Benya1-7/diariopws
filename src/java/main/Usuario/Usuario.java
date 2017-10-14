@@ -5,6 +5,7 @@
  */
 package main.Usuario;
 
+import comun.Validaciones.EliminarFile;
 import main.Usuario.Usuario;
 import com.mysql.jdbc.PreparedStatement;
 import comun.Recurso.Cifrado;

@@ -53,6 +53,7 @@ public class ApplicationConfig extends Application {
         resources.add(main.Publicacion.Detallepublicacion.class);
         resources.add(main.Publicacion.Grupopublicacion.class);
         resources.add(main.Publicacion.Publicacion.class);
+        resources.add(main.Usuario.Cuenta.class);
         resources.add(main.Usuario.Fotousuario.class);
         resources.add(main.Usuario.Rol.class);
         resources.add(main.Usuario.Usuario.class);

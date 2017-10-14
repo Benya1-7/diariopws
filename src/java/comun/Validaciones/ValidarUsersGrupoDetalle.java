@@ -114,7 +114,7 @@ public class ValidarUsersGrupoDetalle {
      public static boolean contarusrgrupo(String idgrupo)throws SQLException, Exception {
      try{
          int numuser=0;
-         int max=3;
+         int max=5;
      String usuarios="";
      OperacionBD.iniciaroperacion();
               String sql ="select count(idusuario) from grupodetalle where idgrupo=?; ";    

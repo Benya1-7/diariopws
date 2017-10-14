@@ -56,14 +56,14 @@ public class AddRepublication {
       return true;
   }
   
-  static boolean insertDpublicacion( String idpublicacion, String tipo, String formato, String descripcion) 
+  static boolean insertDpublicacion( String idpublicacion, String ruta, String tipo, String formato, String descripcion) 
                 throws SQLException   {
       
       String respuesta="";
       
       try {
           OperacionBD.iniciaroperacion();
-           String ruta=SaveDownloadFile.RUTA;
+           //String ruta=SaveDownloadFile.RUTA;
          String sql="INSERT INTO detallepublicacion(idpublicacion, ruta, tipo, formato, descripcion)"  
                                 + "VALUES (?,?,?,?,?);"; 
                  List<Parametro> parametros= new  ArrayList<>();
