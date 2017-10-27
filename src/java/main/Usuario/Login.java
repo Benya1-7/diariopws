@@ -48,25 +48,21 @@ public class Login {
            if (correo == null || correo.trim().equals("")) {
                 Mensaje msg = new Mensaje();
                 msg.setCodigo(Response.Status.UNAUTHORIZED.getStatusCode());
-                msg.setMensaje("Falta el Correo!!!");
+                msg.setMensaje("¡Email no Valido!");
                 return Response.status(Response.Status.PRECONDITION_FAILED.getStatusCode())
                         .entity(msg).build();
             }
             if (password == null || password.trim().equals("")) {
                 Mensaje msg = new Mensaje();
                 msg.setCodigo(Response.Status.PRECONDITION_FAILED.getStatusCode());
-                msg.setMensaje("Falta la contraseña!!!");
+                msg.setMensaje("¡Contraseña incorrecta!");
                 return Response.status(Response.Status.PRECONDITION_FAILED.getStatusCode())
                         .entity(msg).build();
             }
-       
            try {
             UpdateToken.updatetoken(token, correo);
                    
-            } catch (Exception e) {
-                // jsonlogin.put("failed","Ocurrio un error").toString();
-                jsonlogin.put("failed","ooopss!! Por favor verifique su usuario y Contraseña!!");
-            }
+           
             OperacionBD.iniciaroperacion();
       String sql = " SELECT idusuario, cuenta, correo, telefono, foto, fportada, token "
                     + " FROM usuario "
@@ -81,37 +77,28 @@ public class Login {
       parametros.clear();
      
       OperacionBD.confirmaroperacion();
+      
          JSONArray jsonarray = new JSONArray(json);
              for (int i = 0; i < jsonarray.length(); i++) {
                 JSONObject jsonobject = jsonarray.getJSONObject(i);
                resultado=(String) jsonobject.get("correo");
              }
-             if (resultado==null){
-                  jsonlogin.put("ups!!","no encontramos ningun resultado");
+              
+             if (resultado!=null){
+                   jsonlogin.put("Success",json.toString());
              }
-             else {
-                  jsonlogin.put("Success",json.toString());
-             }
-    /* if (json=="") {
-         jsonlogin.put("ups!!","no encontramos ningun resultado");
-        
-        // return Response.status(200).entity(json.toString()).build();
-            
-        } else {
-          jsonlogin.put("Success",json.toString());
-        // jsonlogin.put("failed","ooopss!! Por favor verifique su usuario y Contraseña!!");
-        // return Response.status(204).entity(json.toString()).build();
-        }*/
-    //  return Response.status(200).entity(json.toString()).build();
-    
+             else  jsonlogin.put("failed","upss!! Por favor verifique Email y Contraseña!!");
+                
     } catch (SQLException e){
         Mensaje msg = new Mensaje();
                 msg.setCodigo(Response.Status.UNAUTHORIZED.getStatusCode());
-                msg.setMensaje("!!!");
-    }     
-        
-    return Response.status(200).entity(jsonlogin.toString()).build();            
-   //  return Response.status(200).entity().build();
+                msg.setMensaje(e.toString());
+    }   
+            } catch (Exception e) {
+            jsonlogin.put("failed","ooopss!! Por favor verifique Email y Contraseña!!"+e);
+            }        
+    return Response.status(200).entity(jsonlogin.toString()).build();           
+  
     }
      
 }

@@ -429,6 +429,54 @@ List<Parametro> parametros= new  ArrayList<>();
          return Response.status(200).entity(jsonresp_upload.toString()).build(); 
     }
      /////////////////////////////fin  publicar Nuevo archivo//////////////////
+    
+     //////////////////////////////Actualizar archivo ///////////////////////
+     @POST
+    @Path("/ActualizarArchivo") 
+    @Consumes ({MediaType.MULTIPART_FORM_DATA,"application/json;charset=UTF-8"})
+    @Produces ("application/json;charset=UTF-8")  
+    public Response Actualizar(
+            @FormDataParam("archivo") InputStream archivo
+            ,@FormDataParam("archivo") FormDataContentDisposition detallearchivo
+            ,@FormDataParam("idpublicacion")String   idpublicacion
+             ,@FormDataParam("ruta")String   ruta 
+            ,@FormDataParam("tipoarchivo")String   tipoarchivo
+            ,@FormDataParam("Farchivo")String   Farchivo                  
+            ,@FormDataParam("idgrupo")String idgrupo                 
+                
+    )
+    throws SQLException, Exception{
+        JSONObject jsonresp_upload = new JSONObject();
+	if (archivo == null || detallearchivo == null)
+                    return Response.status(400).entity("Formato no válido").build();
+                  JSONObject jsoninsetpublicacion = new JSONObject();   
+		try {
+	                    crearCarpeta(SaveDownloadFile.RUTA);
+	                    } catch (SecurityException se) 
+                                    {
+	                         return Response.status(500)
+	                         .entity("Hay un error de permisos en el servidor")
+	                          .build();
+	                     }                
+                String rutaarchivo = SaveDownloadFile.RUTA + detallearchivo.getFileName();
+                String descrip=detallearchivo.getFileName();
+                
+
+                try {
+                    guardar(archivo, rutaarchivo);
+                         String tipo=tipoarchivo; // tipo de archvivo 
+                         String formato = Farchivo; //se obtiene el tipo de archivo que es "jpg, pdf, mp3, mp4, etc"
+                         String descripcion=descrip;  //Breve descripcion del archivo "se retoma el titulo del archivo publicado"
+                         AddRepublication.insertDpublicacion(idpublicacion,ruta, tipo, formato, descripcion); 
+                         AddRepublication.grupopublicacion(idpublicacion, idgrupo);                       
+	} catch (IOException e) {
+		return Response.status(500).entity("No se pudo guardar el archivo").build();
+		}
+               jsonresp_upload.put("succes:", detallearchivo.getFileName()); 
+         return Response.status(200).entity(jsonresp_upload.toString()).build(); 
+    }
+     /////////////////////////////fin  Actualizar archivo//////////////////
+     
      
      
      

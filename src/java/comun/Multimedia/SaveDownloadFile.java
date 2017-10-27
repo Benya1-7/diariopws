@@ -16,8 +16,8 @@ import java.io.OutputStream;
  * @author TOSHIBA
  */
 public class SaveDownloadFile {
- //public static final String RUTA =  "/home/diario/tomcat/documentsapp/";     //Ruta de almacenamiento en el servidor
- public static final String RUTA = "/archivosapp/";
+ public static final String RUTA =  "/home/diario/tomcat/documentsapp/";     //Ruta de almacenamiento en el servidor
+// public static final String RUTA = "/archivosapp/";
   /**
      *
      * @param inputStream
